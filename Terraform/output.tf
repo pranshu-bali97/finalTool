@@ -32,7 +32,7 @@ output "private-instance2-id" {
 }
 
 output "public-instance-id" {
-  value = module.instance.public-instance-ip
+  value = module.instance.pub-instance-ip
 }
 
 # Instance IP Address
