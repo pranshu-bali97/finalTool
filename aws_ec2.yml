@@ -3,6 +3,7 @@ regions:
   - "ap-south-1"
 filters:
   tag:Name:
-         - ansible
+        - "mongo-private-1"
+        - "mongo-private-2"
 compose:
   ansible_host: private_ip_address
