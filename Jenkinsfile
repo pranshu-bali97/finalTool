@@ -1,8 +1,7 @@
 pipeline {
 
     parameters {
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-        choice(name: 'action', choices: ['apply', 'destroy'], description: 'Select the action to perform')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply without manual approval?')
     } 
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
@@ -10,11 +9,12 @@ pipeline {
         AWS_DEFAULT_REGION = 'ap-south-1'
     }
 
-   agent  any
-        stages {
+    agent any
+
+    stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/sonichanderkant/Tool_MongoDB.git', branch: 'main'
+                git url: 'https://github.com/DipanshuRawat/finalTool.git', branch: 'main'
             }
         }
 
@@ -25,12 +25,27 @@ pipeline {
                 sh 'pwd;cd Terraform/ ; terraform plan'
             }
         }
-      
-        stage('Apply/Destroy') {
+
+        stage('Apply') {
             steps {
-                sh 'pwd;cd Terraform/ ; terraform ${action} --auto-approve'
+                script {
+                    if (params.autoApprove) {
+                        sh 'pwd;cd Terraform/ ; terraform apply --auto-approve'
+                    } else {
+                        input message: 'Do you want to proceed with Apply?', ok: 'Yes'
+                        sh 'pwd;cd Terraform/ ; terraform apply --auto-approve'
+                    }
+                }
+            }
+        }
+
+        stage('Destroy Approval') {
+            steps {
+                script {
+                    input message: 'Do you want to proceed with Destroy?', ok: 'Yes'
+                    sh 'pwd;cd Terraform/ ; terraform destroy --auto-approve'
+                }
             }
         }
     }
-
 }
