@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/DipanshuRawat/tool.git'
+                git branch: 'main', url: 'https://github.com/DipanshuRawat/finalTool.git'
             }
         }
         stage('Install MongoDB') {
