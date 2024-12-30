@@ -1,12 +1,12 @@
 pipeline {
-
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply without manual approval?')
-    } 
+    }
+
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = 'ap-south-1'
+        AWS_DEFAULT_REGION     = 'us-east-1'
     }
 
     agent any
@@ -14,37 +14,36 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/DipanshuRawat/finalTool.git', branch: 'main'
+                git url: 'https://github.com/pranshu-bali97/finalTool.git', branch: 'main'
             }
         }
 
-        stage('Plan') {
+        stage('Terraform Init') {
             steps {
-                sh 'pwd;cd Terraform/ ; terraform init'
-                sh 'pwd;cd Terraform/ ; terraform validate'
-                sh 'pwd;cd Terraform/ ; terraform plan'
+                sh 'terraform init'
             }
         }
 
-        stage('Apply') {
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                sh 'terraform plan'
+            }
+        }
+
+        stage('Terraform Apply') {
             steps {
                 script {
-                    if (params.autoApprove) {
-                        sh 'pwd;cd Terraform/ ; terraform apply --auto-approve'
-                    } else {
-                        input message: 'Do you want to proceed with Apply?', ok: 'Yes'
-                        sh 'pwd;cd Terraform/ ; terraform apply --auto-approve'
+                    if (!params.autoApprove) {
+                        input message: 'Apply changes?'
                     }
                 }
-            }
-        }
-
-        stage('Destroy Approval') {
-            steps {
-                script {
-                    input message: 'Do you want to proceed with Destroy?', ok: 'Yes'
-                    sh 'pwd;cd Terraform/ ; terraform destroy --auto-approve'
-                }
+                sh 'terraform apply -auto-approve'
             }
         }
     }
