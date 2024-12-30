@@ -20,15 +20,15 @@ variable "pri-sub-2-id" {
 
 variable "ami-id" {
   type = string
-  default = "ami-053b12d3152c0cc71"
+  default = "ami-005fc0f236362e99f"
 }
 
 variable "instance-type" {
   type = string
-  default = "t2.micro"
+  default = "t2.large"
 }
 
 variable "key-name" {
   type = string
-  default = "Tool"
+  default = "t"
 }
