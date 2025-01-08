@@ -1,9 +1,9 @@
 pipeline {
-
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply without manual approval?')
         choice(name: 'action', choices: ['apply', 'destroy'], description: 'Choose between Apply or Destroy')
     } 
+
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -43,9 +43,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-}
         }
     }
 }
