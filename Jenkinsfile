@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: '', branch: 'main'
+                git url: 'https://github.com/pranshu-bali97/finalTool.git', branch: 'main'
             }
         }
 
