@@ -8,17 +8,17 @@ variable "vpc_cidr" {
 
 variable "pri-sub1-az" {
   type = string
-  default = "ap-south-1a"
+  default = "us-east-1a"
 }
 
 variable "pri-sub2-az" {
   type = string
-  default = "ap-south-1b"
+  default = "us-east-1b"
 }
 
 variable "pub-sub-az" {
   type = string
-  default = "ap-south-1b"
+  default = "us-east-1b"
 }
 
 variable "pub-cidr" {
