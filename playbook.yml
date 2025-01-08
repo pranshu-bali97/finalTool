@@ -1,5 +1,5 @@
 - name: Deploy mongoDB-role using Ansible Role
-  hosts: aws_ec2
+  hosts: all
   become: yes
   roles:
     - role: mongoDB-role
