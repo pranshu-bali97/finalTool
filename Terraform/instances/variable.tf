@@ -20,7 +20,7 @@ variable "pri-sub-2-id" {
 
 variable "ami-id" {
   type = string
-  default = "ami-0aeeebd8d2ab47354"
+  default = "ami-053b12d3152c0cc71"
 }
 
 variable "instance-type" {
