@@ -1,12 +1,13 @@
 pipeline {
+
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply without manual approval?')
-    }
-
+        choice(name: 'action', choices: ['apply', 'destroy'], description: 'Choose between Apply or Destroy')
+    } 
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION     = 'us-east-1'
+        AWS_DEFAULT_REGION    = 'us-east-1'
     }
 
     agent any
@@ -14,37 +15,37 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/pranshu-bali97/finalTool.git', branch: 'main'
+                git url: '', branch: 'main'
             }
         }
 
-        stage('Terraform Init') {
+        stage('Plan') {
             steps {
-                sh 'terraform init'
+                sh 'pwd; cd Terraform/ ; terraform init'
+                sh 'pwd; cd Terraform/ ; terraform validate'
+                sh 'pwd; cd Terraform/ ; terraform plan'
             }
         }
 
-        stage('Terraform Validate') {
-            steps {
-                sh 'terraform validate'
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                sh 'terraform plan'
-            }
-        }
-
-        stage('Terraform Apply') {
+        stage('Apply or Destroy') {
             steps {
                 script {
-                    if (!params.autoApprove) {
-                        input message: 'Apply changes?'
+                    if (params.action == 'apply') {
+                        if (params.autoApprove) {
+                            sh 'pwd; cd Terraform/ ; terraform apply --auto-approve'
+                        } else {
+                            input message: 'Do you want to proceed with Apply?', ok: 'Yes'
+                            sh 'pwd; cd Terraform/ ; terraform apply --auto-approve'
+                        }
+                    } else if (params.action == 'destroy') {
+                        input message: 'Do you want to proceed with Destroy?', ok: 'Yes'
+                        sh 'pwd; cd Terraform/ ; terraform destroy --auto-approve'
                     }
                 }
-                sh 'terraform apply -auto-approve'
             }
+        }
+    }
+}
         }
     }
 }
